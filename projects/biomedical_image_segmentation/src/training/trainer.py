@@ -5,16 +5,16 @@ from tqdm import tqdm
 # It also displays progress in the CLI
 
 class SegmentationTrainer:
-    def __init__(self):
-        self.network = None
-        self.optimizer = None
-        self.loss_func = None
-        self.train_dataloader = None 
-        self.val_dataloader = None
+    def __init__(self, network, optimizer, loss_func, train_loader, val_loader, device='cuda'):
+        self.network = network
+        self.optimizer = optimizer
+        self.loss_func = loss_func
+        self.train_dataloader = train_loader 
+        self.val_dataloader = val_loader
 
-        self.device = 'cuda'
+        self.device = device
         self.epoch_count = 0
-        self.loop = None
+        self.loop = tqdm()
 
     def increment_epoch_count(self):
         self.epoch_count += 1
