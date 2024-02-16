@@ -14,12 +14,9 @@ class SegmentationTrainer:
 
         self.device = device
         self.tracker_func =tracker_func
-        self.epoch_count = 0
         self.n_tracks_per_epoch = n_tracks_per_epoch
         self._loop = tqdm()
 
-    def increment_epoch_count(self):
-        self.epoch_count += 1
 
     def train(self, num_epochs):
         train_losses = []
