@@ -63,16 +63,18 @@ class SegmentationTrainer:
 
             y_hat = self.network(imgs)
             loss = self.loss_func(y_hat, labels.long())
-            loss_sum += loss.detach().sum().item()
+            loss_value = loss.detach().sum().item()
+            loss_sum += loss_value
 
             
             probs = y_hat.argmax(1)
             accuracy = (probs == labels).float().mean()
-            acc_sum += accuracy.detach().item()
+            acc_value = accuracy.detach().item()
+            acc_sum += acc_value
 
             mem_allocated = torch.cuda.memory_allocated(0) / 1e9
 
-            self._loop.set_description('loss: {:.4f}, accuracy: {:.4f}, mem: {:.2f}'.format(loss.detach().sum().item(), accuracy, mem_allocated))
+            self._loop.set_description('loss: {:.4f}, accuracy: {:.4f}, mem: {:.2f}'.format(loss_value, acc_value, mem_allocated))
             self._loop.update(1)
 
             if training:
