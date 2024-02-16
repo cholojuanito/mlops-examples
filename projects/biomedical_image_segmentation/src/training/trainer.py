@@ -55,7 +55,7 @@ class SegmentationTrainer:
 
         loss_sum = 0
         acc_sum = 0
-        for i, (imgs, labels) in enumerate(data_loader):
+        for batch_idx, (imgs, labels) in enumerate(data_loader):
             imgs, labels = imgs.to(self.device, non_blocking=True), labels.to(self.device,non_blocking=True) # non_blocking is a speed up (async)
             
             if training:
@@ -81,4 +81,4 @@ class SegmentationTrainer:
                 loss.backward() # Compute gradient, for weight with respect to loss
                 self.optimizer.step() # Take step in the direction of the negative gradient
 
-        return loss_sum/i, acc_sum/i
+        return loss_sum/batch_idx, acc_sum/batch_idx
