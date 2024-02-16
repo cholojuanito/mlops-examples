@@ -37,6 +37,13 @@ class SegmentationTrainer:
             val_loss, val_acc = self._epoch_(self.val_dataloader, training=False)
             self._loop.close()
             
+            # Track final metrics at end of epoch
+            self.tracker_func({
+                'train/train_loss': train_loss,
+                'train/train_acc': train_acc,
+                'val/val_loss': val_loss,
+                'val/val_acc': val_acc
+            })
 
             train_losses.append(train_loss)
             val_losses.append(val_loss)
@@ -76,6 +83,20 @@ class SegmentationTrainer:
 
             self._loop.set_description('loss: {:.4f}, accuracy: {:.4f}, mem: {:.2f}'.format(loss_value, acc_value, mem_allocated))
             self._loop.update(1)
+
+            # track metrics of the first couple of batches in epoch
+            if batch_idx + 1 < self.n_tracks_per_epoch:
+                if training:
+                    metrics = {
+                        'train/train_loss': loss_value,
+                        'train/train_acc': acc_value
+                    }
+                else:
+                    metrics = {
+                        'val/val_loss': loss_value,
+                        'val/val_acc': acc_value
+                    }
+                self.tracker_func(metrics)
 
             if training:
                 loss.backward() # Compute gradient, for weight with respect to loss
