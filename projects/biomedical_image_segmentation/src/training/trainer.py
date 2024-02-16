@@ -28,13 +28,13 @@ class SegmentationTrainer:
             self._loop = tqdm(total=len(self.train_dataloader), position=0, leave=False)
             # Train
             print(f'\nTraining for epoch {i} of {num_epochs}')
-            train_loss, train_acc = self.train_epoch_(self.train_dataloader, training=True)
+            train_loss, train_acc = self._epoch_(self.train_dataloader, training=True)
             self._loop.close()
 
             self._loop = tqdm(total=len(self.val_dataloader), position=0, leave=False)
             # Validate
             print(f"\nValidation for epoch {i} of {num_epochs}")
-            val_loss, val_acc = self.train_epoch_(self.val_dataloader, training=False)
+            val_loss, val_acc = self._epoch_(self.val_dataloader, training=False)
             self._loop.close()
             
 
@@ -45,7 +45,7 @@ class SegmentationTrainer:
 
         return  train_losses, val_losses, train_accuracies, val_accuracies
 
-    def train_epoch_(self, data_loader, training=True):
+    def _epoch_(self, data_loader, training=True):
         if training:
             self.network.train() 
             torch.set_grad_enabled(True)
