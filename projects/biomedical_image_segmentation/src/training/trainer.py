@@ -14,7 +14,7 @@ class SegmentationTrainer:
 
         self.device = device
         self.epoch_count = 0
-        self.loop = tqdm()
+        self._loop = tqdm()
 
     def increment_epoch_count(self):
         self.epoch_count += 1
@@ -26,17 +26,17 @@ class SegmentationTrainer:
         val_accuracies = []
 
         for i in range(1, num_epochs+1):
-            self.loop = tqdm(total=len(self.train_dataloader), position=0, leave=False)
+            self._loop = tqdm(total=len(self.train_dataloader), position=0, leave=False)
             # Train
             print(f'\nTraining for epoch {i} of {num_epochs}')
             train_loss, train_acc = self.train_epoch_(self.train_dataloader, training=True)
-            self.loop.close()
+            self._loop.close()
 
-            self.loop = tqdm(total=len(self.val_dataloader), position=0, leave=False)
+            self._loop = tqdm(total=len(self.val_dataloader), position=0, leave=False)
             # Validate
             print(f"\nValidation for epoch {i} of {num_epochs}")
             val_loss, val_acc = self.train_epoch_(self.val_dataloader, training=False)
-            self.loop.close()
+            self._loop.close()
             
 
             train_losses.append(train_loss)
@@ -73,8 +73,8 @@ class SegmentationTrainer:
 
             mem_allocated = torch.cuda.memory_allocated(0) / 1e9
 
-            self.loop.set_description('loss: {:.4f}, accuracy: {:.4f}, mem: {:.2f}'.format(loss.detach().sum().item(), accuracy, mem_allocated))
-            self.loop.update(1)
+            self._loop.set_description('loss: {:.4f}, accuracy: {:.4f}, mem: {:.2f}'.format(loss.detach().sum().item(), accuracy, mem_allocated))
+            self._loop.update(1)
 
             if training:
                 loss.backward() # Compute gradient, for weight with respect to loss
